@@ -1,8 +1,16 @@
 const request = require('request');
 
-const breed = process.argv[2];
-request("https://api.thecatapi.com/v1/breeds/search?q=" + breed, (error, response, body) => {
-  const data = JSON.parse(body);
-  data.length ? console.log(data[0]["description"]) : console.log("No such breed, try a substring of a different breed!");
-  //console.log(data);
-});
+const fetchBreedDescription = function(breedName, callback) {
+
+  request("https://api.thecatapi.com/v1/breeds/search?q=" + breedName, (error, response, body) => {
+    const data = JSON.parse(body);
+    if (!error && data.length) {
+      callback(error, data[0]["description"]);
+      return;
+    }
+    callback(error, null);
+  });
+
+};
+
+module.exports = fetchBreedDescription;
